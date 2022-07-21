@@ -15,6 +15,20 @@ pipeline {
             }
             
         }
+        stage('Delete Resources') {
+            steps {
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE'){
+                   sh "oc delete sa jenkins-service-account"
+                   sh "oc delete deployment employee-app-v2"
+                   sh "oc delete bc employee-app-v2"
+                   sh "oc delete service employee-app-v2"
+                   sh "oc delete route employee-app-v2"
+                   sh "oc delete imagestream employee-app-v2"
+                }
+                
+            }
+            
+        }
         stage('Login to namespace') {
             steps {
                 sh "oc project pipeline"
